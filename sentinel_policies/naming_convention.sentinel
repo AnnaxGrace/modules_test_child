@@ -1,0 +1,33 @@
+import "tfplan/v2" as tfplan
+
+param rg_regex
+
+fail_list = []
+
+all_rg = filter tfplan.resource_changes as _, rc {
+    rc.type is "azurerm_resource_group"
+}
+
+func check_rg_naming_convention(rg_list) {
+  for rg_list as address, rg_name{
+    if rg_name.change.after.name matches rg_regex {
+      print(rg_name.change.after.name, "passes standards")
+    } else {
+      append(fail_list, rg_name.change.after.name)
+      print(rg_name.change.after.name, "does not conform to Azure Naming Standards")
+    }
+  }
+  return "here"
+}
+
+check_rg_naming_convention(all_rg)
+
+if length(fail_list) > 0 {
+  print("************************************************************************")
+	print("ERROR: These resources do not conform to naming standards:", fail_list, "Please update and retry. LINK TO STANDARDS.")
+} else {
+  print("************************************************************************")
+	print("SUCCESS: All resources confirm to naming standards!")
+}
+
+main = rule { length(fail_list) is 0}
