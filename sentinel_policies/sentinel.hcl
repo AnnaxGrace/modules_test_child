@@ -4,10 +4,10 @@ mock "tfplan/v2" {
   }
 }
 
-param "rg_regex" {
-  value = "rg-(dev|qa|uat|prd)-(cus|eus2)-[a-z]+-[a-z]+-\\d{3}$"
-}
-
-param "agw_regex" {
-  value = "agw-(dev|qa|uat|prd)-(cus|eus2)-[a-z]+-\\d{3}$"
+policy "naming_convention" {
+  source = "./naming_convention.sentinel"
+  params = {
+    "rg_regex"  = "rg-(dev|qa|uat|prd)-(cus|eus2)-[a-z]+-[a-z]+-\\d{3}$",
+    "agw_regex" = "agw-(dev|qa|uat|prd)-(cus|eus2)-[a-z]+-\\d{3}$"
+  }
 }
